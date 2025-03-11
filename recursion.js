@@ -65,7 +65,6 @@ function binarySearch(arr,val) {
 
 
 
-// pascal's triangle
 function pTri(n) {
     if(n==1){return [[1]]}
     let res=pTri(n-1);
@@ -73,7 +72,8 @@ function pTri(n) {
     return res;
 }
 
-// takes in a row of pascal's triangle and outputs the next row
+// takes in first n-1 rows of pascal's triangle
+//and outputs the next row
 function pRow(r) {
     var n=r.length-1;
     let row = [1];
@@ -85,8 +85,6 @@ function pRow(r) {
 }
 
 
-//returns all permutations of a given string
-//in an array
 function perm(str){
     let arr=[];
     let l = str.length;
@@ -99,16 +97,34 @@ function perm(str){
             arr.push(str[i]+temp[j])
         }
     }
-   
     return arr;
 }
+
+function arrPerm(arr){
+    let final=[];
+    let l = arr.length;
+    if(l==1){ 
+        return [[].concat(arr)]; 
+    }
+    for (let i=0; i<l; i++) {
+        let tArr=[].concat(arr);
+        tArr.splice(i,1);
+        let temp=arrPerm(tArr);
+        for (let j=0; j<temp.length; j++){
+            temp[j].push(arr[i])
+            final.push(temp[j])
+        }
+    }
+    return final;
+}
+
 
 function subSets(arr) {
     if (arr.length==0) {return [[]]}
     let sets=[arr];
     let tArr=[].concat(arr);
     for (let i=0; i<arr.length; i++) {
-        tArr.remove(i);
+        tArr.splice(i,1);
         sets=sets.concat(subSets(tArr));
         tArr=[];
         for(let j=0; j<arr.length; j++) {
@@ -137,4 +153,38 @@ function equal(a,b) {
         if (a[i]!=b[i]) {return false}
     }
     return true;
+}
+
+
+function comboSum(arr, num) {
+    let final=[];
+    if (arr.length==1) {
+        if (num%arr[0]==0) {
+            let temp=[];
+            for (let i=0; i<num/arr[0]; i++) {
+                temp.push(arr[0]);
+            }
+            final.push(temp);
+            return final;
+        } else {
+            return final;
+        }
+    }
+    let original=[].concat(arr);
+    for (let i=0; i<original.length; i++) {
+        let temp=[];
+        let n=Math.floor(num/arr[i]);
+        for (let j=0; j<n; j++) {
+            temp.push(arr[i]);
+        }
+        num-=n*arr[i];
+        arr.splice(i,1);
+        let rec=comboSum(arr,num);
+        for (let j=0; j<rec.length; j++) {
+            final.push(temp.concat(rec[j]));
+        }
+        arr=[].concat(original);
+        num+=n*arr[i];
+    }
+    return removeRedundancy(final);
 }
