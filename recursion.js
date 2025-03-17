@@ -1,5 +1,4 @@
 
-//python -m http.server
 
 function countHi(str) {
     if (str[0]=="h"&&str[1]=="i") {
@@ -170,21 +169,53 @@ function comboSum(arr, num) {
             return final;
         }
     }
+    
+    
     let original=[].concat(arr);
     for (let i=0; i<original.length; i++) {
-        let temp=[];
-        let n=Math.floor(num/arr[i]);
-        for (let j=0; j<n; j++) {
-            temp.push(arr[i]);
-        }
-        num-=n*arr[i];
+        let temp=arr[i];
         arr.splice(i,1);
-        let rec=comboSum(arr,num);
-        for (let j=0; j<rec.length; j++) {
-            final.push(temp.concat(rec[j]));
+        let n=Math.floor(num/temp);
+        let tArr=[];
+        for (let k=0; k<=n; k++) {
+            if (k!=0) {
+                tArr.push(temp);
+                num-=temp;
+            }
+            if (num==0) {final.push(tArr);}
+            let rec=comboSum(arr,num);
+            for (let j=0; j<rec.length; j++) {
+                final.push(tArr.concat(rec[j]));
+            }
         }
         arr=[].concat(original);
         num+=n*arr[i];
     }
-    return removeRedundancy(final);
+    return removeRedundancyCSum(final);
 }
+
+function removeRedundancyCSum(arr) {
+    let final=[]
+    for (let i=0; i<arr.length; i++) {
+        let tArr=arrPerm(arr[i]);
+        let bool=true;
+        for (let j=0; j<tArr.length; j++) {
+            for (let k=0; k<final.length; k++) {
+                if (equal(tArr[j],final[k])) {bool=false}
+            }
+        }
+        if(bool){final.push(arr[i])}
+    }
+    return final
+}
+
+
+
+
+
+
+
+
+
+
+console.log(comboSum([1,2,3,4,5,6],6))
